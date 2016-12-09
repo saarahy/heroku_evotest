@@ -62,6 +62,8 @@ class Content:
                 result = self.population.get_population()
             elif method == "getReadAll":
                 result = self.population.read_all()
+            elif method == "getSpecie":
+                result = self.population.get_species()
             elif method == "getSample_specie":
                 result = self.population.get_sample_specie(params[0])
                 if result:
