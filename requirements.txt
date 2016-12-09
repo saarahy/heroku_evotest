@@ -1,0 +1,5 @@
+cherrypy
+jsonrpc
+redis
+simplejson
+deap
