@@ -116,7 +116,7 @@ class Population:
             for key in sample:
                 sample3.append(Individual(id=key).get(i, as_dict=True))
         try:
-            if count % 4 == 0:
+            if count % 3 == 0:
                 for i in sample3:
                     y = {"specie": None}
                     i.update(y)
