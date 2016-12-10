@@ -134,9 +134,15 @@ class Population:
         return result
 
     def get_species(self):
+        l_k=[]
         keys = sorted(r.keys())
-        keys.pop()
-        return keys
+        #keys.pop()
+        for e in keys:
+            try:
+                l_k.append(int(e))
+            except:
+                None
+        return l_k
 
     def get_sample(self, size):
 
