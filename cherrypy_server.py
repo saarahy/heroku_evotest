@@ -60,6 +60,11 @@ class Content:
                 result = self.population.get_returned_counter()
             elif method == "getPopulation":
                 result = self.population.get_population()
+                if result:
+                    return json.dumps({"result": result, "error": None, "id": _id})
+                else:
+                    return json.dumps({"result": None, "error":
+                        {"code": -32601, "message": "EvoSpace empty"}, "id": _id})
             elif method == "getReadAll":
                 result = self.population.read_all()
             elif method == "getSpecie":
