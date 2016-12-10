@@ -115,6 +115,9 @@ class Population:
             sample = r.hgetall(i)
             for key in sample:
                 sample3.append(Individual(id=key).get(i, as_dict=True))
+
+        r.sadd(self.name + ":sample:%s" % sample_id, *sample3)
+        r.rpush(self.sample_queue, self.name + ":sample:%s" % sample_id)
         try:
             if count % 3 == 0:
                 for i in sample3:
