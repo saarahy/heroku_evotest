@@ -117,15 +117,15 @@ class Population:
                 sample3.append(Individual(id=key).get(i, as_dict=True))
         try:
             # if count % 4 == 0:
-            #     for i in sample3:
-            #         y = {"specie": None}
-            #         i.update(y)
-            #     result = {'sample_id': self.name + ":sample:%s" % sample_id,
-            #               'sample': sample3}
+                for i in sample3:
+                    y = {"specie": None}
+                    i.update(y)
+                result = {'sample_id': self.name + ":sample:%s" % sample_id,
+                          'sample': sample3}
             #     # return result
             # else:
-            result = {'sample_id': self.name + ":sample:%s" % sample_id,
-                          'sample': sample3}
+            #     result = {'sample_id': self.name + ":sample:%s" % sample_id,
+            #               'sample': sample3}
         except:
             return None
         return result
