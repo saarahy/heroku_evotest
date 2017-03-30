@@ -41,6 +41,7 @@ class Individual:
         if pipe.hset(self.specie, self.id, self.__dict__):
         #if pipe.sadd( population, self.id ):
         #    pipe.set( self.id , self.__dict__ )
+            pipe.hset(self.specie, self.id, self.__dict__)
             pipe.execute()
             return True
         else:
