@@ -39,14 +39,14 @@ class Individual:
 
     def put(self, population):
         pipe = r.pipeline()
-        if pipe.hset(self.specie, self.id, self.__dict__):
+        #if pipe.hset(self.specie, self.id, self.__dict__):
         #if pipe.sadd( population, self.id ):
         #    pipe.set( self.id , self.__dict__ )
-            pipe.hset(self.specie, self.id, self.__dict__)
-            pipe.execute()
-            return True
-        else:
-            return False
+        pipe.hset(self.specie, self.id, self.__dict__)
+        pipe.execute()
+        return True
+        #else:
+            #return False
 
     def get_specie(self):
         return int(self.specie)
