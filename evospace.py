@@ -33,6 +33,7 @@ class Individual:
         self.fitness = kwargs.get('fitness',{})
         self.chromosome = kwargs.get('chromosome',[])
         self.specie = kwargs.get('specie')
+        self.params = kwargs.get('params')
         self.__dict__.update(kwargs)
 
 
