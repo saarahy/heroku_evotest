@@ -258,9 +258,9 @@ class Population:
                 r.sunionstore("log:"+str(count), "pop")
 
         # delete all the individuals of the specie\
-        #if sample['sample_specie'] is not None:
-            #if r.exists(sample['sample_specie']):
-            #r.delete(sample['sample_specie'])
+        if sample['sample_specie'] is not None:
+            if r.exists(sample['sample_specie']):
+                r.delete(sample['sample_specie'])
 
 
         for member in sample['sample']:
