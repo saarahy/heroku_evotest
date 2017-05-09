@@ -42,13 +42,13 @@ class Individual:
         #if pipe.hset(self.specie, self.id, self.__dict__):
         #if pipe.sadd( population, self.id ):
         #    pipe.set( self.id , self.__dict__ )
-        if pipe.hexists(self.specie, self.id):
-            pipe.hdel(self.specie, self.id)
-            pipe.hset(self.specie, self.id, self.__dict__)
-            pipe.execute()
-            return True
-        else:
-            return False
+        #if pipe.hexists(self.specie, self.id):
+        pipe.hdel(self.specie)
+        pipe.hset(self.specie, self.id, self.__dict__)
+        pipe.execute()
+        return True
+        # else:
+        #     return False
 
     def get_specie(self):
         return int(self.specie)
