@@ -103,7 +103,7 @@ class Population:
         if keys:
             r.delete(*keys)
 
-        #r.flushall()
+        r.flushall()
         r.hsetnx('at', self.sample_counter, 0)
         r.hsetnx('at', self.individual_counter, 0)
         r.hsetnx('at', self.returned_counter, 0)
