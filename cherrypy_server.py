@@ -47,7 +47,7 @@ class Content:
             elif method == "respawn":
                 result = self.population.respawn(params[0])
             elif method == "putZample":
-                result = self.population.put_sample(params[0])
+                result = self.population.put_sample_specie(params[0])
             elif method == "putIndividual":
                 result = self.population.put_individual(**params[0])
             elif method == "size":

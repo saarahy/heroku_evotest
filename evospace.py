@@ -44,7 +44,7 @@ class Individual:
         #    pipe.set( self.id , self.__dict__ )
         #if pipe.hexists(self.specie, self.id):
         #pipe.hdel(self.specie, self.id)
-        pipe.delete(self.specie)
+
         pipe.hset(self.specie, self.id, self.__dict__)
         pipe.execute()
         return True
@@ -179,7 +179,7 @@ class Population:
         if AUTO_RESPAWN and r.scard(self.name) <= MIN_SIZE:
             self.respawn(RE_INSERT_SAMPLES)
 
-        sample_id = r.hincrby('at',self.sample_counter)
+        sample_id = r.hincrby('at', self.sample_counter)
 
             # Get keys
 
@@ -223,15 +223,13 @@ class Population:
         result =  { 'sample':   [Individual(id=key).get(as_dict=True) for key in sample]}
         return result
 
-
     def put_individual(self, **kwargs ):
         if kwargs['id'] is None:
             kwargs['id'] = self.name+":individual:%s" % r.hincrby('at',self.individual_counter)
         ind = Individual(**kwargs)
         ind.put(self.name)
 
-
-    def put_sample(self,sample):
+    def put_sample(self, sample):
         if not isinstance(sample,dict):
             raise TypeError("Samples must be dictionaries")
 
@@ -241,6 +239,29 @@ class Population:
             count = r.hincrby('at',self.returned_counter)
             if count % LOG_INTERVAL == 0 :
                 r.sunionstore("log:"+str(count),"pop")
+
+        for member in sample['sample']:
+            if member['id'] is None:
+                member['id'] = self.name+":individual:%s" % r.hincrby('at',self.individual_counter)
+            self.put_individual(**member)
+        r.delete(sample['sample_id'])
+        r.lrem(self.sample_queue,sample['sample_id'])
+
+    def put_sample_specie(self, sample):
+        if not isinstance(sample, dict):
+            raise TypeError("Samples must be dictionaries")
+
+        r.hincrby('at', self.returned_counter)
+
+        if LOGGING:
+            count = r.hincrby('at', self.returned_counter)
+            if count % LOG_INTERVAL == 0:
+                r.sunionstore("log:"+str(count), "pop")
+
+        # delete all the individuals of the specie
+        if r.exists(sample['sample_specie']):
+            r.delete(sample['sample_specie'])
+
 
         for member in sample['sample']:
             if member['id'] is None:
