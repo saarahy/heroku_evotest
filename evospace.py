@@ -44,7 +44,6 @@ class Individual:
         #    pipe.set( self.id , self.__dict__ )
         #if pipe.hexists(self.specie, self.id):
         #pipe.hdel(self.specie, self.id)
-
         pipe.hset(self.specie, self.id, self.__dict__)
         pipe.execute()
         return True
@@ -258,9 +257,10 @@ class Population:
             if count % LOG_INTERVAL == 0:
                 r.sunionstore("log:"+str(count), "pop")
 
-        # delete all the individuals of the specie
-        if r.exists(sample['sample_specie']):
-            r.delete(sample['sample_specie'])
+        # delete all the individuals of the specie\
+        if sample['sample_specie'] is not None:
+            if r.exists(sample['sample_specie']):
+                r.delete(sample['sample_specie'])
 
 
         for member in sample['sample']:
