@@ -73,12 +73,28 @@ class Individual:
     def as_dict(self):
         return self.__dict__
 
+class Specie:
+    def __init__(self, **kwargs):
+        self.id = kwargs['id']
+        self.intra_distance = kwargs.get('intra_distance')
+        self.flag_speciation = kwargs.get('flag_speciation')
+        self.__dict__.update(kwargs)
+
+    def put(self):
+        pipe = r.pipeline()
+        pipe.hset(self.id, "pop", self.__dict__)
+        pipe.execute()
+        return True
+
+    def as_dict(self):
+        return self.__dict__
 
 class Population:
     def __init__(self, name = "pop" ):
         self.name = name
         self.sample_counter = self.name+':sample_count'
         self.individual_counter = self.name+':individual_count'
+        self.specie_counter = self.name + ':specie_count'
         self.sample_queue = self.name+":sample_queue"
         self.returned_counter = self.name+":returned_count"
         self.log_queue = self.name+":log_queue"
@@ -106,6 +122,7 @@ class Population:
         #r.flushall()
         r.hsetnx('at', self.sample_counter, 0)
         r.hsetnx('at', self.individual_counter, 0)
+        r.hsetnx('at', self.specie_counter, 0)
         r.hsetnx('at', self.returned_counter, 0)
         r.hset('at', self.name + ":found", 0)
 
@@ -195,7 +212,7 @@ class Population:
         r.rpush(self.sample_queue, self.name + ":sample:%s" % sample_id)
         try:
             result = {'sample_id': self.name + ":sample:%s" % sample_id,
-                      'sample': [Individual(id=key).get(specie,as_dict=True) for key in sample]}
+                      'sample': [Individual(id=key).get(specie, as_dict=True) for key in sample]}
         except:
             return None
         return result
@@ -221,6 +238,13 @@ class Population:
         sample = r.smembers(self.name)
         result =  { 'sample':   [Individual(id=key).get(as_dict=True) for key in sample]}
         return result
+
+    def put_specieinfo(self, **kwargs):
+        if kwargs['id'] is None:
+            kwargs['id'] = self.name+":specie:%s" % r.hincrby('at', self.specie_counter)
+        specie = Specie(**kwargs)
+        specie.put(self.name)
+
 
     def put_individual(self, **kwargs ):
         if kwargs['id'] is None:
@@ -262,13 +286,12 @@ class Population:
             if r.exists(sample['sample_specie']):
                 r.delete(sample['sample_specie'])
 
-
         for member in sample['sample']:
             if member['id'] is None:
-                member['id'] = self.name+":individual:%s" % r.hincrby('at',self.individual_counter)
+                member['id'] = self.name+":individual:%s" % r.hincrby('at', self.individual_counter)
             self.put_individual(**member)
         r.delete(sample['sample_id'])
-        r.lrem(self.sample_queue,sample['sample_id'])
+        r.lrem(self.sample_queue, sample['sample_id'])
 
 
     def respawn_sample(self, sample_id):
