@@ -27,7 +27,7 @@ if os.environ.get('REDISTOGO_URL'):
     r = redis.Redis(host=url.hostname, port=url.port, password=url.password)
 #LOCAL
 else:
-    r = redis.Redis(host=HOST, port=PORT)
+    r = redis.Redis(host=HOST, port=PORT, password=PASS)
 
 class Individual:
     def __init__(self, **kwargs):
