@@ -9,10 +9,14 @@ AUTO_RESPAWN = True
 RESPAWN='REINSERT'
 #RESPAWN='RANDOM'
 
-HOST="redis-10326.c8.us-east-1-3.ec2.cloud.redislabs.com"
+#HOST="redis-10326.c8.us-east-1-3.ec2.cloud.redislabs.com"
 #"pub-redis-13994.us-east-1-3.3.ec2.garantiadata.com"#"pub-redis-17694.us-east-1-3.4.ec2.garantiadata.com"
-PORT = 10326#13994#17694
-PASS = "evo6"#"evopool6"
+#PORT = 10326#13994#17694
+#PASS = "evo6"#"evopool6"
+
+HOST= "localhost"
+PORT= 6379
+
 import os, redis, random
 
 ##REDISCLOUD
@@ -23,7 +27,7 @@ if os.environ.get('REDISTOGO_URL'):
     r = redis.Redis(host=url.hostname, port=url.port, password=url.password)
 #LOCAL
 else:
-    r = redis.Redis(host=HOST, port=PORT, password=PASS)
+    r = redis.Redis(host=HOST, port=PORT)
 
 class Individual:
     def __init__(self, **kwargs):
@@ -77,10 +81,9 @@ class Specie:
         self.flag_speciation = kwargs.get('flag_speciation')
         self.__dict__.update(kwargs)
 
-    def put(self):
+    def put(self, id):
         pipe = r.pipeline()
-        # pipe.hset(self.id, "pop", self.__dict__)
-        pipe.hset(self.id, "pop", "specie")
+        pipe.hset(self.id, "pop", self.__dict__)
         pipe.execute()
         return True
 
@@ -223,11 +226,11 @@ class Population:
         result = {'sample':   [Individual(id=key).get(as_dict=True) for key in sample]}
         return result
 
-    def put_specieinfo(self, **kwargs):
-        if kwargs['id'] is None:
-            kwargs['id'] = self.id+":specie:%s" % r.hincrby('at', self.specie_counter)
-        specie = Specie(**kwargs)
-        specie.put(self.id)
+    def put_specieinfo(self, specie):
+        if specie['id'] is None:
+            specie['id'] = "specie:%s" % r.hincrby('at', self.specie_counter)
+        specie = Specie(**specie)
+        specie.put(specie.id)
 
     def put_individual(self, **kwargs):
         if kwargs['id'] is None:
