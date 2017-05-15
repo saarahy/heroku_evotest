@@ -79,6 +79,7 @@ class Specie:
         self.id = kwargs['id']
         self.intra_distance = kwargs.get('intra_distance')
         self.flag_speciation = kwargs.get('flag_speciation')
+        self.specie = kwargs.get('specie')
         self.__dict__.update(kwargs)
 
     def put(self, id):
@@ -228,7 +229,8 @@ class Population:
 
     def put_specieinfo(self, specie):
         if specie['id'] is None:
-            specie['id'] = "specie:%s" % r.hincrby('at', self.specie_counter)
+            r.hincrby('at', self.specie_counter)
+            specie['id'] = "specie:%s" % specie['specie'] # % r.hincrby('at', self.specie_counter)
         specie = Specie(**specie)
         specie.put(specie.id)
 
