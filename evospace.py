@@ -88,6 +88,18 @@ class Specie:
         pipe.execute()
         return True
 
+    def get(self,  as_dict=False):
+        if r.hget(self.id, self.id):
+            _dict = eval(r.hget(self.id, self.id))
+            self.__dict__.update(_dict)
+        else:
+            raise LookupError("Key Not Found")
+
+        if as_dict:
+            return self.__dict__
+        else:
+            return self
+
     def as_dict(self):
         return self.__dict__
 
@@ -226,6 +238,11 @@ class Population:
         sample = r.smembers(self.name)
         result = {'sample':   [Individual(id=key).get(as_dict=True) for key in sample]}
         return result
+
+    def get_specieinfo(self, specie):
+        id_Specie =  "specie:%s" % specie
+        sample = Specie(id=id_Specie).get(as_dict=True)
+        return sample["intra_distance"]
 
     def put_specieinfo(self, specie):
         if specie['id'] is None:
