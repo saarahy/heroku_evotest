@@ -84,7 +84,7 @@ class Specie:
 
     def put(self, id):
         pipe = r.pipeline()
-        pipe.hset(self.id, "pop", self.__dict__)
+        pipe.hset(self.id, id, self.__dict__)
         pipe.execute()
         return True
 
