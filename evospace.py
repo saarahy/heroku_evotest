@@ -9,13 +9,13 @@ AUTO_RESPAWN = True
 RESPAWN='REINSERT'
 #RESPAWN='RANDOM'
 
-#HOST="redis-10326.c8.us-east-1-3.ec2.cloud.redislabs.com"
-#"pub-redis-13994.us-east-1-3.3.ec2.garantiadata.com"#"pub-redis-17694.us-east-1-3.4.ec2.garantiadata.com"
-#PORT = 10326#13994#17694
-#PASS = "evo6"#"evopool6"
+HOST="redis-10326.c8.us-east-1-3.ec2.cloud.redislabs.com"
+# "pub-redis-13994.us-east-1-3.3.ec2.garantiadata.com"#"pub-redis-17694.us-east-1-3.4.ec2.garantiadata.com"
+PORT = 10326#13994#17694
+PASS = "evo6"#"evopool6"
 
-HOST= "localhost"
-PORT= 6379
+# HOST= "localhost"
+# PORT= 6379
 
 import os, redis, random
 
@@ -240,7 +240,7 @@ class Population:
         return result
 
     def get_specieinfo(self, specie):
-        id_Specie =  "specie:%s" % specie
+        id_Specie = "specie:%s" % specie
         sample = Specie(id=id_Specie).get(as_dict=True)
         return sample["intra_distance"]
 

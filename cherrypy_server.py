@@ -50,6 +50,8 @@ class Content:
                 result = self.population.put_sample_specie(params[0])
             elif method == "putSpecie":
                 result = self.population.put_specieinfo(params[0])
+            elif method == "getIntraSpecie":
+                result = self.population.get_specieinfo(params[0])
             elif method == "putIndividual":
                 result = self.population.put_individual(**params[0])
             elif method == "size":
