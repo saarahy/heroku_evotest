@@ -225,8 +225,7 @@ class Population:
 
     def put_specieinfo(self, **kwargs):
         if kwargs['id'] is None:
-            # kwargs['id'] = self.id+":specie:%s" % r.hincrby('at', self.specie_counter)
-            kwargs['id'] = self.id + ":specie:" # % r.hincrby('at', self.specie_counter)
+            kwargs['id'] = self.id+":specie:%s" % r.hincrby('at', self.specie_counter)
         specie = Specie(**kwargs)
         specie.put(self.id)
 
