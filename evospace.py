@@ -242,7 +242,15 @@ class Population:
     def get_specieinfo(self, specie):
         id_Specie = "specie:%s" % specie
         sample = Specie(id=id_Specie).get(as_dict=True)
+        return sample
+
+    def get_speciedistance(self, specie):
+        id_Specie = "specie:%s" % specie
+        sample = Specie(id=id_Specie).get(as_dict=True)
         return sample["intra_distance"]
+
+    def get_at_specie(self):
+        return r.hget('at', 'pop:specie_count')
 
     def put_specieinfo(self, specie):
         if specie['id'] is None:

@@ -51,7 +51,7 @@ class Content:
             elif method == "putSpecie":
                 result = self.population.put_specieinfo(params[0])
             elif method == "getIntraSpecie":
-                result = self.population.get_specieinfo(params[0])
+                result = self.population.get_speciedistance(params[0])
             elif method == "putIndividual":
                 result = self.population.put_individual(**params[0])
             elif method == "size":
@@ -60,6 +60,8 @@ class Content:
                 result = self.population.found()
             elif method == "found_it":
                 result = self.population.found_it()
+            elif method == "get_CounterSpecie":
+                result = self.population.get_at_specie()
             elif method == "getSampleNumber":
                 result = self.population.get_returned_counter()
             elif method == "getPopulation":
