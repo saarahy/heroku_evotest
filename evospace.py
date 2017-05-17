@@ -255,7 +255,7 @@ class Population:
     def put_specieinfo(self, specie):
         if specie['id'] is None:
             specie['id'] = "specie:%s" % specie['specie'] # % r.hincrby('at', self.specie_counter)
-        if r.hexists(specie['id'], specie['id']):
+        if not r.hexists(specie['id'], specie['id']):
             r.hincrby('at', self.specie_counter)
         specie = Specie(**specie)
         specie.put(specie.id)
