@@ -250,7 +250,7 @@ class Population:
         return sample["intra_distance"]
 
     def get_at_specie(self):
-        return r.hget('at', 'pop:specie_count')
+        return r.hget('at', self.specie_counter)
 
     def put_specieinfo(self, specie):
         if specie['id'] is None:
