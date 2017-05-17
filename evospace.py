@@ -254,8 +254,9 @@ class Population:
 
     def put_specieinfo(self, specie):
         if specie['id'] is None:
-            r.hincrby('at', self.specie_counter)
             specie['id'] = "specie:%s" % specie['specie'] # % r.hincrby('at', self.specie_counter)
+        if r.hexists(specie['id'], specie['id']):
+            r.hincrby('at', self.specie_counter)
         specie = Specie(**specie)
         specie.put(specie.id)
 
@@ -281,7 +282,7 @@ class Population:
                 member['id'] = self.name+":individual:%s" % r.hincrby('at',self.individual_counter)
             self.put_individual(**member)
         r.delete(sample['sample_id'])
-        r.lrem(self.sample_queue,sample['sample_id'])
+        r.lrem(self.sample_queue, sample['sample_id'])
 
     def put_sample_specie(self, sample):
         if not isinstance(sample, dict):
