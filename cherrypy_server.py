@@ -52,6 +52,8 @@ class Content:
                 result = self.population.put_specieinfo(params[0])
             elif method == "getIntraSpecie":
                 result = self.population.get_speciedistance(params[0])
+            elif method == "getSpecieInfo":
+                result = self.population.get_specieinfo(params[0])
             elif method == "putIndividual":
                 result = self.population.put_individual(**params[0])
             elif method == "size":
@@ -87,7 +89,6 @@ class Content:
 
         else:
             return simplejson.dumps({"result": 'HOLA', "error": None, "id": [0.]})
-
 
 
     # @cherrypy.expose
