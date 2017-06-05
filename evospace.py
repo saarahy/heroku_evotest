@@ -9,6 +9,7 @@ AUTO_RESPAWN = True
 RESPAWN='REINSERT'
 #RESPAWN='RANDOM'
 
+
 HOST="redis-10326.c8.us-east-1-3.ec2.cloud.redislabs.com"
 # "pub-redis-13994.us-east-1-3.3.ec2.garantiadata.com"#"pub-redis-17694.us-east-1-3.4.ec2.garantiadata.com"
 PORT = 10326#13994#17694
@@ -80,13 +81,19 @@ class Specie:
         self.intra_distance = kwargs.get('intra_distance')
         self.flag_speciation = kwargs.get('flag_speciation')
         self.specie = kwargs.get('specie')
+        self.free_specie = kwargs.get('free_specie')
         self.__dict__.update(kwargs)
 
     def put(self, id):
         pipe = r.pipeline()
         pipe.hset(self.id, id, self.__dict__)
+        pipe.hset(self.id, 'free_specie', True)
         pipe.execute()
         return True
+
+    def del_(self, specie_):
+        r.delete(self.id)
+        r.delete(specie_)
 
     def get(self,  as_dict=False):
         if r.hget(self.id, self.id):
@@ -100,6 +107,18 @@ class Specie:
         else:
             return self
 
+    def get_freespecie(self):
+        if r.hget(self.id, 'free_specie'):
+            return r.hget(self.id, 'free_specie')
+        else:
+            raise LookupError("Key Not Found")
+
+    def set_freespecie(self, b_key):
+        if r.hget(self.id, 'free_specie'):
+            return r.hset(self.id, 'free_specie', b_key)
+        else:
+            raise LookupError("Key Not Found")
+
     def as_dict(self):
         return self.__dict__
 
@@ -112,6 +131,8 @@ class Population:
         self.specie_counter = self.name + ':specie_count'
         self.sample_queue = self.name+":sample_queue"
         self.returned_counter = self.name+":returned_count"
+        self.free_pop = self.name + ":free_pop"
+        self.free_file = self.name + ":free_file"
         self.log_queue = self.name+":log_queue"
 
     def get_returned_counter(self):
@@ -130,10 +151,12 @@ class Population:
         if keys:
             r.delete(*keys)
         #r.flushall()
-        r.hsetnx('at', self.sample_counter, 0)
-        r.hsetnx('at', self.individual_counter, 0)
-        r.hsetnx('at', self.specie_counter, 0)
-        r.hsetnx('at', self.returned_counter, 0)
+        r.hset('at', self.sample_counter, 0)
+        r.hset('at', self.individual_counter, 0)
+        r.hset('at', self.specie_counter, 0)
+        r.hset('at', self.returned_counter, 0)
+        r.hset('at', self.free_pop, False)
+        r.hset('at', self.free_file, True)
         r.hset('at', self.name + ":found", 0)
 
     def get_population(self):
@@ -251,6 +274,34 @@ class Population:
 
     def get_at_specie(self):
         return r.hget('at', self.specie_counter)
+
+    def get_freePop(self):
+        return r.hget('at', self.free_pop)
+
+    def get_freeFile(self):
+        return r.hget('at', self.free_file)
+
+    def flush(self):
+        r.flushdb()
+
+    def delSpecie(self, specie):
+        id_Specie = "specie:%s" % specie
+        Specie(id=id_Specie).del_(specie)
+
+    def set_freePop(self, b_key):
+        return r.hset('at', self.free_pop, b_key)
+
+    def set_freeFile(self, b_key):
+        return r.hset('at', self.free_file, b_key)
+
+    def get_freeSpecie(self, specie):
+        id_Specie = "specie:%s" % specie
+        specie = Specie(id=id_Specie).get_freespecie()
+        return specie
+
+    def set_freeSpecie(self, specie):
+        id_Specie = "specie:%s" % specie['id']
+        Specie(id=id_Specie).set_freespecie(specie['b_key'])
 
     def put_specieinfo(self, specie):
         if specie['id'] is None:

@@ -26,10 +26,7 @@ class Content:
 
             if "params" in obj:
                 params = obj["params"]
-            # else:
-            #     return json.dumps({"result": None, "error":
-            #         {"code": -32604, "message": "Params empty"}, "id": _id})
-            #
+
             # # process the data
             cherrypy.response.headers['Content-Type'] = 'text/json-comment-filtered'
             result = None
@@ -52,8 +49,24 @@ class Content:
                 result = self.population.put_specieinfo(params[0])
             elif method == "getIntraSpecie":
                 result = self.population.get_speciedistance(params[0])
+            elif method == "setSpecieFree":
+                result = self.population.set_freeSpecie(params[0])
+            elif method == "getSpecieFree":
+                result = self.population.get_freeSpecie(params[0])
             elif method == "getSpecieInfo":
                 result = self.population.get_specieinfo(params[0])
+            elif method == "getFreePopulation":
+                result = self.population.get_freePop()
+            elif method == "getFreeFile":
+                result = self.population.get_freeFile()
+            elif method == "flushPopulation":
+                result  = self.population.flush()
+            elif method == "delSpecie":
+                result = self.population.delSpecie(params[0])
+            elif method == "setFreePopulation":
+                result = self.population.set_freePop(params[0])
+            elif method == "setFreeFile":
+                result = self.population.set_freeFile(params[0])
             elif method == "putIndividual":
                 result = self.population.put_individual(**params[0])
             elif method == "size":
