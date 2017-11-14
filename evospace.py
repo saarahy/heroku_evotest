@@ -119,6 +119,9 @@ class Specie:
         else:
             raise LookupError("Key Not Found")
 
+    def specie_exists(self):
+        return r.exists(self.id)
+
     def as_dict(self):
         return self.__dict__
 
@@ -265,6 +268,11 @@ class Population:
     def get_specieinfo(self, specie):
         id_Specie = "specie:%s" % specie
         sample = Specie(id=id_Specie).get(as_dict=True)
+        return sample
+
+    def get_speciexists(self, specie):
+        id_Specie = "specie:%s" % specie
+        sample = Specie(id=id_Specie).specie_exists()
         return sample
 
     def get_speciedistance(self, specie):
